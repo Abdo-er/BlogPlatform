@@ -1,0 +1,256 @@
+/* ========== إعادة استخدام ستايل الهيدر والفوتر ========== */
+.navbar-pro {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 0.6rem 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.navbar-brand-logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff, #c7d2fe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.nav-link-pro {
+    color: #e2e8f0 !important;
+    font-weight: 500;
+    margin: 0 0.2rem;
+    padding: 0.5rem 1rem !important;
+    border-radius: 2rem;
+}
+.nav-link-pro:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+.btn-outline-glass {
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.05);
+    color: #f1f5f9;
+    border-radius: 2rem;
+    padding: 0.4rem 1.2rem;
+}
+.btn-primary-glass {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 2rem;
+    padding: 0.4rem 1.3rem;
+    color: white;
+    box-shadow: 0 2px 8px rgba(79,70,229,0.3);
+}
+.user-dropdown-toggle {
+    background: rgba(255,255,255,0.1);
+    border-radius: 2rem;
+    padding: 0.3rem 1rem;
+    color: white;
+}
+.dropdown-menu-pro {
+    background: white;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+}
+.dropdown-item-pro {
+    border-radius: 0.6rem;
+    padding: 0.4rem 1rem;
+}
+.dropdown-item-pro i {
+    margin-left: 0.5rem;
+    color: #4f46e5;
+}
+
+/* ========== الفوتر ========== */
+.footer-pro {
+    background: #0f172a;
+    color: #cbd5e1;
+    padding: 1.5rem 0 1rem;
+    margin-top: 2rem;
+}
+.footer-title {
+    color: white;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+}
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+.footer-links li {
+    margin-bottom: 0.3rem;
+}
+.footer-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+.social-icons {
+    display: flex;
+    gap: 0.5rem;
+}
+.social-icon {
+    background: rgba(255,255,255,0.08);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #cbd5e1;
+    transition: 0.2s;
+}
+.social-icon:hover {
+    background: #4f46e5;
+    color: white;
+}
+.copyright {
+    font-size: 0.7rem;
+    text-align: center;
+    color: #94a3b8;
+}
+.footer-divider {
+    border-color: #1e293b;
+    margin: 1rem 0;
+}
+
+/* ========== ستايل خاص بصفحة إنشاء المقالة ========== */
+.create-article-card {
+    background: white;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+}
+.card-header-custom {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    padding: 1.5rem 2rem;
+    color: white;
+    text-align: center;
+}
+.card-header-custom h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+.card-header-custom h2 i {
+    margin-left: 0.5rem;
+}
+.card-header-custom p {
+    margin: 0;
+    opacity: 0.9;
+}
+.card-body-custom {
+    padding: 2rem;
+}
+
+/* تنسيق الحقول العامة */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-label {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.form-label i {
+    color: #4f46e5;
+    font-size: 1.1rem;
+}
+.form-control, .form-select {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+    outline: none;
+}
+textarea.form-control {
+    resize: vertical;
+    min-height: 200px;
+}
+
+/* ========== تنسيق خاص لقائمة الأقسام (select) بشكل جميل ========== */
+.form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 1rem center;
+    background-size: 1rem;
+    cursor: pointer;
+}
+.form-select option {
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+.form-select optgroup {
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+/* رسائل الخطأ */
+.text-danger {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+.alert-danger {
+    background-color: #fee2e2;
+    border-color: #fecaca;
+    color: #991b1b;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+.alert-danger ul {
+    margin: 0;
+    padding-right: 1rem;
+}
+.alert-danger li {
+    margin-bottom: 0.2rem;
+}
+
+/* الأزرار */
+.btn-outline-secondary {
+    border-radius: 2rem;
+    padding: 0.5rem 1.5rem;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+.btn-outline-secondary:hover {
+    background-color: #f1f5f9;
+    transform: translateY(-1px);
+}
+.btn-primary {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border: none;
+    border-radius: 2rem;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(79,70,229,0.3);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .card-header-custom {
+        padding: 1rem;
+    }
+    .card-header-custom h2 {
+        font-size: 1.4rem;
+    }
+    .card-body-custom {
+        padding: 1.2rem;
+    }
+    .form-control, .form-select {
+        font-size: 0.9rem;
+    }
+}

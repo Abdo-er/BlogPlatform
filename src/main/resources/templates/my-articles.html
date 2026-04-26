@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقالاتي - عمق</title>
+
+    <!-- Bootstrap 5 RTL + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/my-articles.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- ========== الهيدر (مضمن) ========== -->
+    <nav class="navbar navbar-expand-lg navbar-pro sticky-top">
+        <div class="container">
+            <a class="navbar-brand navbar-brand-logo" th:href="@{/}">
+                <i class="bi bi-journal-bookmark-fill"></i> عمق
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarProContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarProContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link nav-link-pro" th:href="@{/}"><i class="bi bi-house-door"></i> الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-pro" th:href="@{/articles/create}"><i class="bi bi-pencil-square"></i> كتابة مقالة</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <div sec:authorize="!isAuthenticated()" class="d-flex gap-2">
+                        <a th:href="@{/login}" class="btn btn-outline-glass"><i class="bi bi-box-arrow-in-right"></i> دخول</a>
+                        <a th:href="@{/register}" class="btn btn-primary-glass"><i class="bi bi-person-plus"></i> حساب جديد</a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()" class="dropdown">
+                        <button class="btn user-dropdown-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle user-avatar"></i> <span sec:authentication="name"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-pro dropdown-menu-end">
+                            <li><a class="dropdown-item dropdown-item-pro" th:href="@{/profile/{username}(username=${#authentication.name})}"><i class="bi bi-person"></i> ملفي الشخصي</a></li>
+                            <li><a class="dropdown-item dropdown-item-pro" th:href="@{/my-articles}"><i class="bi bi-journal-text"></i> مقالاتي</a></li>
+                            <li><a class="dropdown-item dropdown-item-pro" th:href="@{/articles/create}"><i class="bi bi-pencil"></i> مقالة جديدة</a></li>
+                            <li><hr class="dropdown-divider-custom"></li>
+                            <li><a class="dropdown-item dropdown-item-pro dropdown-item-danger" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> تسجيل خروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== المحتوى الرئيسي ========== -->
+    <main class="flex-grow-1 py-5">
+        <div class="container">
+            <!-- رأس الصفحة -->
+            <div class="page-header text-center mb-5">
+                <div class="page-icon">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+                <h1 class="display-6 fw-bold">مقالاتي</h1>
+                <p class="text-muted">جميع مقالاتك التي كتبتها</p>
+            </div>
+
+            <!-- عدد المقالات -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3><i class="bi bi-collection"></i> مقالاتك</h3>
+                <span class="badge bg-light text-dark rounded-pill" th:text="${articles.size()}+' مقالة'"></span>
+            </div>
+
+            <!-- حالة عدم وجود مقالات -->
+            <div th:if="${articles.empty}" class="empty-state text-center py-5">
+                <i class="bi bi-journal-x empty-icon"></i>
+                <h4 class="mt-3">لم تقم بكتابة أي مقالات بعد</h4>
+                <p class="text-muted">ابدأ في مشاركة أفكارك وتجاربك مع المجتمع</p>
+                <a th:href="@{/articles/create}" class="btn btn-primary rounded-pill px-4">كتابة أول مقالة</a>
+            </div>
+
+            <!-- شبكة المقالات -->
+            <div th:unless="${articles.empty}" class="article-grid">
+                <div th:each="article : ${articles}" class="article-card">
+                    <div class="card-img-placeholder">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-category" th:if="${article.category != null}" th:text="${article.category.name}"></div>
+                        <h5 class="card-title" th:text="${article.title}"></h5>
+                        <p class="card-excerpt" th:text="${#strings.abbreviate(article.content, 110)}"></p>
+                        <div class="card-footer-meta">
+                            <span><i class="bi bi-calendar3"></i> <span th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy')}"></span></span>
+                            <div>
+                                <a th:href="@{/articles/edit/{id}(id=${article.id})}" class="btn-edit" title="تعديل"><i class="bi bi-pencil"></i></a>
+                                <form th:action="@{/articles/delete/{id}(id=${article.id})}" method="post" style="display:inline-block;">
+                                    <button type="submit" class="btn-delete" title="حذف" onclick="return confirm('هل أنت متأكد من حذف هذه المقالة؟')"><i class="bi bi-trash"></i></button>
+                                </form>
+                                <a th:href="@{/articles/{id}(id=${article.id})}" class="btn-read" title="قراءة"><i class="bi bi-eye"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========== الفوتر ========== -->
+    <footer class="footer-pro">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h5 class="footer-title">عمق - منصة الكتابات الجادة</h5>
+                    <p class="small">نحو محتوى عربي هادف وعميق. نرحب بكل كاتب جاد.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <h6 class="footer-title fs-6">روابط</h6>
+                    <ul class="footer-links">
+                        <li><a th:href="@{/}"><i class="bi bi-house-door"></i> الرئيسية</a></li>
+                        <li><a th:href="@{/articles/create}"><i class="bi bi-pencil-square"></i> كتابة مقالة</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <h6 class="footer-title fs-6">تواصل</h6>
+                    <ul class="footer-links">
+                        <li><i class="bi bi-envelope"></i> info@amq.com</li>
+                        <li><i class="bi bi-geo-alt"></i> الرياض</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="copyright">© 2025 عمق — جميع الحقوق محفوظة</div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

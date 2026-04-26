@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كتابة مقالة جديدة - عمق</title>
+
+    <!-- Bootstrap 5 RTL + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- ملف CSS الخاص بهذه الصفحة -->
+    <link rel="stylesheet" th:href="@{/css/create-article.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- ====================== الهيدر ====================== -->
+    <nav class="navbar navbar-expand-lg navbar-pro sticky-top">
+        <div class="container">
+            <a class="navbar-brand navbar-brand-logo" th:href="@{/}">
+                <i class="bi bi-journal-bookmark-fill"></i> عمق
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarProContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarProContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link nav-link-pro" th:href="@{/}"><i class="bi bi-house-door"></i> الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-pro active" th:href="@{/articles/create}"><i class="bi bi-pencil-square"></i> كتابة مقالة</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <div sec:authorize="!isAuthenticated()" class="d-flex gap-2">
+                        <a th:href="@{/login}" class="btn btn-outline-glass"><i class="bi bi-box-arrow-in-right"></i> دخول</a>
+                        <a th:href="@{/register}" class="btn btn-primary-glass"><i class="bi bi-person-plus"></i> حساب جديد</a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()" class="dropdown">
+                        <button class="btn user-dropdown-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle user-avatar"></i> <span sec:authentication="name"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-pro dropdown-menu-end">
+                            <li><a class="dropdown-item dropdown-item-pro" th:href="@{/profile/{username}(username=${#authentication.name})}"><i class="bi bi-person"></i> ملفي الشخصي</a></li>
+                            <li><a class="dropdown-item dropdown-item-pro" th:href="@{/my-articles}"><i class="bi bi-journal-text"></i> مقالاتي</a></li>
+                            <li><a class="dropdown-item dropdown-item-pro" th:href="@{/articles/create}"><i class="bi bi-pencil"></i> مقالة جديدة</a></li>
+                            <li><hr class="dropdown-divider-custom"></li>
+                            <li><a class="dropdown-item dropdown-item-pro dropdown-item-danger" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> تسجيل خروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ====================== المحتوى الرئيسي (نموذج إنشاء مقالة) ====================== -->
+    <main class="flex-grow-1 py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="create-article-card">
+                        <div class="card-header-custom">
+                            <h2><i class="bi bi-pencil-square"></i> كتابة مقالة جديدة</h2>
+                            <p>شارك فكرتك أو تجربتك مع المجتمع</p>
+                        </div>
+                        <div class="card-body-custom">
+                            <!-- عرض رسائل الخطأ -->
+                            <div th:if="${errorMessages}" class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <ul class="mb-0">
+                                    <li th:each="msg : ${errorMessages}" th:text="${msg}"></li>
+                                </ul>
+                            </div>
+
+                            <!-- نموذج المقالة -->
+                            <form th:action="@{/articles/create}" th:object="${article}" method="post">
+                                <!-- عنوان المقالة -->
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-type"></i> العنوان *</label>
+                                    <input type="text" class="form-control" th:field="*{title}" placeholder="عنوان جذاب يعبر عن محتوى مقالتك (5-200 حرف)">
+                                    <div th:if="${#fields.hasErrors('title')}" class="text-danger small mt-1" th:errors="*{title}"></div>
+                                </div>
+
+                                <!-- اختيار القسم (الأقسام ثابتة + ديناميكية) -->
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-folder"></i> القسم *</label>
+                                    <select class="form-select" id="categoryId" name="categoryId" required>
+                                        <option value="" disabled selected>-- اختر القسم المناسب --</option>
+                                        <!-- إذا كانت هناك أقسام من الخادم نعرضها -->
+                                        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                                        <!-- إذا لم توجد أقسام من الخادم، نعرض أقساماً افتراضية -->
+                                        <option th:unless="${categories != null and !categories.isEmpty()}" value="1">أدب</option>
+                                        <option th:unless="${categories != null and !categories.isEmpty()}" value="2">أعمال</option>
+                                        <option th:unless="${categories != null and !categories.isEmpty()}" value="3">تعلم</option>
+                                        <option th:unless="${categories != null and !categories.isEmpty()}" value="4">مهارات</option>
+                                        <option th:unless="${categories != null and !categories.isEmpty()}" value="5">سفر</option>
+                                    </select>
+                                    <div class="form-text text-muted">اختر التصنيف المناسب لمقالتك.</div>
+                                </div>
+
+                                <!-- محتوى المقالة -->
+                                <div class="form-group mb-4">
+                                    <label class="form-label fw-semibold"><i class="bi bi-textarea"></i> المحتوى *</label>
+                                    <textarea class="form-control" th:field="*{content}" rows="18" placeholder="اكتب مقالتك هنا... (على الأقل 200 حرف، مقسمة إلى فقرات)"></textarea>
+                                    <div th:if="${#fields.hasErrors('content')}" class="text-danger small mt-1" th:errors="*{content}"></div>
+                                    <div class="form-text text-muted mt-1">
+                                        <i class="bi bi-info-circle"></i> يجب أن يكون المحتوى على الأقل 200 حرف، يحتوي على فكرة متكاملة، مقسمًا إلى فقرات، وخالٍ من العبارات السطحية أو الإعلانية.
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <a th:href="@{/}" class="btn btn-outline-secondary rounded-pill px-4"><i class="bi bi-x-circle"></i> إلغاء</a>
+                                    <button type="submit" class="btn btn-primary rounded-pill px-5"><i class="bi bi-send"></i> نشر المقالة</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ====================== الفوتر ====================== -->
+    <footer class="footer-pro">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h5 class="footer-title">عمق - منصة الكتابات الجادة</h5>
+                    <p class="small">نحو محتوى عربي هادف وعميق. نرحب بكل كاتب جاد.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <h6 class="footer-title fs-6">روابط</h6>
+                    <ul class="footer-links">
+                        <li><a th:href="@{/}"><i class="bi bi-house-door"></i> الرئيسية</a></li>
+                        <li><a th:href="@{/articles/create}"><i class="bi bi-pencil-square"></i> كتابة مقالة</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <h6 class="footer-title fs-6">تواصل</h6>
+                    <ul class="footer-links">
+                        <li><i class="bi bi-envelope"></i> info@amq.com</li>
+                        <li><i class="bi bi-geo-alt"></i> الرياض</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="copyright">© 2025 عمق — جميع الحقوق محفوظة</div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

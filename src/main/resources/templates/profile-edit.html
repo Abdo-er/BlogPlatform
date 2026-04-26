@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل الملف الشخصي - عمق</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/profile-edit.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- ========== الهيدر ========== -->
+    <nav class="navbar navbar-expand-lg navbar-pro sticky-top">
+        <div class="container">
+            <a class="navbar-brand navbar-brand-logo" th:href="@{/}">
+                <i class="bi bi-journal-bookmark-fill"></i> عمق
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarProContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarProContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link nav-link-pro" th:href="@{/}"><i class="bi bi-house-door"></i> الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-pro" th:href="@{/articles/create}"><i class="bi bi-pencil-square"></i> كتابة مقالة</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <div sec:authorize="!isAuthenticated()" class="d-flex gap-2">
+                        <a th:href="@{/login}" class="btn btn-outline-glass"><i class="bi bi-box-arrow-in-right"></i> دخول</a>
+                        <a th:href="@{/register}" class="btn btn-primary-glass"><i class="bi bi-person-plus"></i> حساب جديد</a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()" class="dropdown">
+                        <button class="btn user-dropdown-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle user-avatar"></i> <span sec:authentication="name"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-pro dropdown-menu-end">
+                            <li><a class="dropdown-item dropdown-item-pro" th:href="@{/profile/{username}(username=${#authentication.name})}"><i class="bi bi-person"></i> ملفي الشخصي</a></li>
+                            <li><a class="dropdown-item dropdown-item-pro" th:href="@{/my-articles}"><i class="bi bi-journal-text"></i> مقالاتي</a></li>
+                            <li><a class="dropdown-item dropdown-item-pro" th:href="@{/articles/create}"><i class="bi bi-pencil"></i> مقالة جديدة</a></li>
+                            <li><hr class="dropdown-divider-custom"></li>
+                            <li><a class="dropdown-item dropdown-item-pro dropdown-item-danger" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> تسجيل خروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== المحتوى الرئيسي ========== -->
+    <main class="flex-grow-1 py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="edit-card">
+                        <div class="edit-header">
+                            <i class="bi bi-pencil-square edit-icon"></i>
+                            <h2>تعديل الملف الشخصي</h2>
+                            <p class="text-muted">قم بتحديث معلوماتك الشخصية</p>
+                        </div>
+                        <div class="edit-body">
+                            <form th:action="@{/profile/edit}" th:object="${user}" method="post">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">اسم المستخدم</label>
+                                    <input type="text" class="form-control" th:value="${user.username}" disabled readonly>
+                                    <div class="form-text text-muted">لا يمكن تغيير اسم المستخدم</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">البريد الإلكتروني</label>
+                                    <input type="email" class="form-control" th:value="${user.email}" disabled readonly>
+                                    <div class="form-text text-muted">لا يمكن تغيير البريد الإلكتروني</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">الاسم الكامل</label>
+                                    <input type="text" class="form-control" th:field="*{fullName}" placeholder="أدخل اسمك الكامل">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">نبذة عنك</label>
+                                    <textarea class="form-control" th:field="*{bio}" rows="4" placeholder="اكتب نبذة عن نفسك..."></textarea>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <a th:href="@{/profile/{username}(username=${user.username})}" class="btn btn-outline-secondary rounded-pill px-4">
+                                        <i class="bi bi-x-circle"></i> إلغاء
+                                    </a>
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                        <i class="bi bi-check-circle"></i> حفظ التغييرات
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========== الفوتر ========== -->
+    <footer class="footer-pro">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h5 class="footer-title">عمق - منصة الكتابات الجادة</h5>
+                    <p class="small">نحو محتوى عربي هادف وعميق. نرحب بكل كاتب جاد.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <h6 class="footer-title fs-6">روابط</h6>
+                    <ul class="footer-links">
+                        <li><a th:href="@{/}"><i class="bi bi-house-door"></i> الرئيسية</a></li>
+                        <li><a th:href="@{/articles/create}"><i class="bi bi-pencil-square"></i> كتابة مقالة</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <h6 class="footer-title fs-6">تواصل</h6>
+                    <ul class="footer-links">
+                        <li><i class="bi bi-envelope"></i> info@amq.com</li>
+                        <li><i class="bi bi-geo-alt"></i> الرياض</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="copyright">© 2025 عمق — جميع الحقوق محفوظة</div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
